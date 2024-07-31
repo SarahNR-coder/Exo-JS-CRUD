@@ -109,14 +109,16 @@ const firebaseConfig = {
 
 
   };
-  
+  const $inputId = document.querySelector(".edit-userid");
+  const editUserInputsUI = document.querySelectorAll(".edit-user-input");
+
   function editButtonClicked(event) {
     formUserEditUI.style.display = "block";
     formUserUI.style.display = "none";
-    const $inputId = document.querySelector(".edit-userid");
+    
     $inputId.value = event.target.getAttribute("userid");
     let userRef = dbRef.child('users/' + $inputId.value);
-    let editUserInputsUI = document.querySelectorAll(".edit-user-input");
+    //let editUserInputsUI = document.querySelectorAll(".edit-user-input");
 
     userRef.on("value", snap => {
       for(let i=0; i<editUserInputsUI.length; i++){
@@ -129,8 +131,18 @@ const firebaseConfig = {
     $saveBtn.addEventListener("click", saveUserBtnClicked);
   };
   
+
   function saveUserBtnClicked() {
-  
+    let userID = $inputId.value;
+    let userRef = dbRef.child('users/'+userID);
+    let editedUserObject ={};
+    editUserInputsUI.forEach(function(textField){
+      let key = textField.getAttribute("data-key");
+      editedUserObject[key] = textField.value;
+    })
+    userRef.update(editedUserObject);
+    formUserEditUI.style.display = "none";
+    formUserEditUI.style.display ="block";
   };
   
   function deleteButtonClicked(event) {
